@@ -63,9 +63,7 @@ class qa_html_theme_base
 		$this->rooturl = $rooturl;
 		$this->request = $request;
 
-
 		$this->isRTL = isset($content['direction']) && $content['direction'] === 'rtl';
-
 	}
 
 	/**
@@ -74,7 +72,6 @@ class qa_html_theme_base
 	 */
 	public function qa_html_theme_base($template, $content, $rooturl, $request)
 	{
-
 		self::__construct($template, $content, $rooturl, $request);
 	}
 
@@ -123,7 +120,7 @@ class qa_html_theme_base
 	}
 
 
-	public function output_split($parts, $class, $outertag='span', $innertag='span', $extraclass=null , $href = null )
+	public function output_split($parts, $class, $outertag='span', $innertag='span', $extraclass=null)
 /*
 	Output the three elements ['prefix'], ['data'] and ['suffix'] of $parts (if they're defined),
 	with appropriate CSS classes based on $class, using $outertag and $innertag in the markup.
@@ -132,27 +129,13 @@ class qa_html_theme_base
 		if (empty($parts) && strtolower($outertag) != 'td')
 			return;
 
-		if ($href != null)
-		{
-			$this->output(
-				'<'.$outertag." href=".$href.' class="'.$class.(isset($extraclass) ? (' '.$extraclass) : '').'">',
-				(strlen(@$parts['prefix']) ? ('<'.$innertag.' href='.$href.' class="'.$class.'-pad">'.$parts['prefix'].'</'.$innertag.'>') : '').
-				(strlen(@$parts['data']) ? ('<'.$innertag.' href='.$href.' class="'.$class.'-data">'.$parts['data'].'</'.$innertag.'>') : '').
-				(strlen(@$parts['suffix']) ? ('<'.$innertag.' href='.$href.' class="'.$class.'-pad">'.$parts['suffix'].'</'.$innertag.'>') : ''),
-				'</'.$outertag.'>'
-			);
-		}
-		else
-		{
-			$this->output(
-				'<'.$outertag.' class="'.$class.(isset($extraclass) ? (' '.$extraclass) : '').'">',
-				(strlen(@$parts['prefix']) ? ('<'.$innertag.' class="'.$class.'-pad">'.$parts['prefix'].'</'.$innertag.'>') : '').
-				(strlen(@$parts['data']) ? ('<'.$innertag.' class="'.$class.'-data">'.$parts['data'].'</'.$innertag.'>') : '').
-				(strlen(@$parts['suffix']) ? ('<'.$innertag.' class="'.$class.'-pad">'.$parts['suffix'].'</'.$innertag.'>') : ''),
-				'</'.$outertag.'>'
-			);
-		}
-
+		$this->output(
+			'<'.$outertag.' class="'.$class.(isset($extraclass) ? (' '.$extraclass) : '').'">',
+			(strlen(@$parts['prefix']) ? ('<'.$innertag.' class="'.$class.'-pad">'.$parts['prefix'].'</'.$innertag.'>') : '').
+			(strlen(@$parts['data']) ? ('<'.$innertag.' class="'.$class.'-data">'.$parts['data'].'</'.$innertag.'>') : '').
+			(strlen(@$parts['suffix']) ? ('<'.$innertag.' class="'.$class.'-pad">'.$parts['suffix'].'</'.$innertag.'>') : ''),
+			'</'.$outertag.'>'
+		);
 	}
 
 
@@ -276,12 +259,6 @@ class qa_html_theme_base
 		$headtitle = (strlen($pagetitle) ? ($pagetitle.' - ') : '').$this->content['site_title'];
 
 		$this->output('<title>'.$headtitle.'</title>');
-		if ($this->content['canonical'])
-		{
-			//$this->output('<link rel="canoncial">');
-			//var_dump('here');die();
-		}
-
 	}
 
 	public function head_metas()
@@ -296,16 +273,7 @@ class qa_html_theme_base
 	public function head_links()
 	{
 		if (isset($this->content['canonical']))
-			if ($this->content['canonical'] == "")
-			{
-				$this->output('<link rel="canonical" href="'.'/'.'"/>');
-
-			}else
-			{
-				$this->output('<link rel="canonical" href="'."../".$this->content['canonical'].'"/>');
-
-
-			}
+			$this->output('<link rel="canonical" href="'.$this->content['canonical'].'"/>');
 
 		if (isset($this->content['feed']['url']))
 			$this->output('<link rel="alternate" type="application/rss+xml" href="'.$this->content['feed']['url'].'" title="'.@$this->content['feed']['label'].'"/>');
@@ -321,14 +289,9 @@ class qa_html_theme_base
 
 	public function head_script()
 	{
-		$this->output_raw(' <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"></script>');
 		if (isset($this->content['script'])) {
 			foreach ($this->content['script'] as $scriptline)
-			{
-
 				$this->output_raw($scriptline);
-
-			}
 		}
 	}
 
@@ -1584,7 +1547,6 @@ class qa_html_theme_base
 	{
 		if (isset($q_list['qs'])) {
 			$this->output('<div class="qa-q-list'.($this->list_vote_disabled($q_list['qs']) ? ' qa-q-list-vote-disabled' : '').'">', '');
-			//$this->output('<div><img src="https://www.bidbarg.com/bimeh/pic/moshavere.gif" </div>');
 			$this->q_list_items($q_list['qs']);
 			$this->output('</div> <!-- END qa-q-list -->', '');
 		}
@@ -1642,28 +1604,13 @@ class qa_html_theme_base
 
 	public function q_item_title($q_item)
 	{
-		if (is_array($q_item['url']))
-		{
-			$this->output(
-				'<div class="qa-q-item-title">',
-				'<a href="'.$q_item['url']['url'].'"'.'canonical="'. $q_item['url']['canonical'].'"">'.$q_item['title'].'</a>',
-				// add closed note in title
-				empty($q_item['closed']['state']) ? '' : ' ['.$q_item['closed']['state'].']',
-				'</div>'
-			);
-		}
-		else
-		{
-
-			$this->output(
-				'<div class="qa-q-item-title">',
-				'<a href="'.$q_item['url'].'">'.$q_item['title'].'</a>',
-				// add closed note in title
-				empty($q_item['closed']['state']) ? '' : ' ['.$q_item['closed']['state'].']',
-				'</div>'
-			);
-		}
-
+		$this->output(
+			'<div class="qa-q-item-title">',
+			'<a href="'.$q_item['url'].'">'.$q_item['title'].'</a>',
+			// add closed note in title
+			empty($q_item['closed']['state']) ? '' : ' ['.$q_item['closed']['state'].']',
+			'</div>'
+		);
 	}
 
 	public function q_item_content($q_item)
@@ -1769,11 +1716,10 @@ class qa_html_theme_base
 
 	public function a_count($post)
 	{
-
 		// You can also use $post['answers_raw'] to get a raw integer count of answers
 
-		$this->output_split(@$post['answers'], 'qa-a-count', 'span', 'a',
-			@$post['answer_selected'] ? 'qa-a-count-selected' : (@$post['answers_raw'] ? null : 'qa-a-count-zero'),@$post['url']);
+		$this->output_split(@$post['answers'], 'qa-a-count', 'span', 'span',
+			@$post['answer_selected'] ? 'qa-a-count-selected' : (@$post['answers_raw'] ? null : 'qa-a-count-zero'));
 	}
 
 	public function view_count($post)
@@ -2093,14 +2039,11 @@ class qa_html_theme_base
 			$this->q_view_clear();
 
 			$this->output('</div> <!-- END qa-q-view -->', '');
-			$this->output('<div><a href="https://www.bidbarg.com/example"><img src="https://www.bidbarg.com/bimeh/pic/moshavere.gif"/></a>  </div>');
-
 		}
 	}
 
 	public function q_view_stats($q_view)
 	{
-
 		$this->output('<div class="qa-q-view-stats">');
 
 		$this->voting($q_view);

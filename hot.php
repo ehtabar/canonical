@@ -59,7 +59,7 @@
 
 //	Prepare and return content for theme
 
-	 $qa_content = qa_q_list_page_content(
+	return qa_q_list_page_content(
 		$questions, // questions
 		qa_opt('page_size_hot_qs'), // questions per page
 		$start, // start offset
@@ -74,17 +74,6 @@
 		qa_html_suggest_ask() // suggest what to do next
 	);
 
-
-if (count($categoryslugs)) {
-
-
-	$qa_content['canonical'] = $categoryslugs[count($categoryslugs) - 1];
-
-
-} else {
-	$qa_content['canonical'] = "";
-}
-return $qa_content;
 
 /*
 	Omit PHP closing tag to help avoid accidental output
